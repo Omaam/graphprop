@@ -18,13 +18,13 @@ class Graph:
     def add_node(self, name: str, is_origin: bool):
         self.nodes[name] = Node(name, is_origin)
 
-    def initialize(self, maxlag: int):
+    def initialize(self, num_burnin: int):
         for node in self.nodes.values():
-            node.values.extend(maxlag * [0.0])
+            node.values.extend(num_burnin * [0.0])
 
-        self.maxlag = maxlag
-        self.time = maxlag
-        for _ in range(maxlag):
+        self.num_burnin = num_burnin
+        self.time = num_burnin
+        for _ in range(num_burnin):
             self.update()
 
     def set_impact_generator(self, target_node: str,
@@ -63,7 +63,7 @@ class Graph:
         realizations = []
         for name, node in self.nodes.items():
             names.append(name)
-            realizations.append(node.values[2*self.maxlag:])
+            realizations.append(node.values[2*self.num_burnin:])
         realizations = pd.DataFrame(realizations, index=names).T
         return realizations
 

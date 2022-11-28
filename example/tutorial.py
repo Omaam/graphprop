@@ -71,8 +71,8 @@ def main():
     graph.set_impact_generator("x1", generator_white_noise)
     graph.set_impact_generator("x5", generator_white_noise)
 
-    maxlag = 20
-    graph.initialize(maxlag)
+    num_burnin = 20
+    graph.initialize(num_burnin)
     for _ in range(1000):
         graph.update()
 
