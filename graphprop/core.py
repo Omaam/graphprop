@@ -1,6 +1,7 @@
+"""Core module.
 """
-"""
-import numpy as np
+from typing import Callable
+
 import pandas as pd
 
 
@@ -10,6 +11,9 @@ class Graph:
     def __init__(self):
         self.nodes = dict()
         self.time = None
+
+    def __getitem__(self, key):
+        return self.nodes[key]
 
     def add_node(self, name: str, is_origin: bool):
         self.nodes[name] = Node(name, is_origin)
@@ -23,6 +27,12 @@ class Graph:
         for _ in range(maxlag):
             self.update()
 
+    def set_impact_generator(self, target_node: str,
+                             impact_func: Callable):
+        """Set imact genarator function to a node.
+        """
+        self[target_node].set_impact_generator(impact_func)
+
     def update(self):
 
         if self.time is None:
@@ -33,19 +43,19 @@ class Graph:
         self.time += 1
         for node in self.nodes.values():
             if node.is_origin:
-                value = np.random.normal(10, 1)
+                value = next(node.impact_generator())
                 node.values.append(value)
             else:
                 total_value = 0
                 for cond in node.prop_conds:
-                    target_node = self.nodes[cond["from"]]
+                    target_node = self[cond["from"]]
                     value = target_node.values[self.time - cond["lag"] - 1]
                     total_value += cond["intensity"] * value
                 node.values.append(total_value)
 
     def write_node_condition(self, target: str, prop_from: str,
                              intensity: float, lag: int):
-        self.nodes[target].add_condition(prop_from, intensity, lag)
+        self[target].add_condition(prop_from, intensity, lag)
 
     @property
     def realization(self):
@@ -65,6 +75,7 @@ class Node:
         self.prop_conds = []
         self.values = []
         self.is_origin = is_origin
+        self.impact_generator = None
 
     def add_condition(self, prop_from: str, intensity: float,
                       lag: int):
@@ -74,3 +85,8 @@ class Node:
             "lag":       lag
         }
         self.prop_conds.append(prop_cond)
+
+    def set_impact_generator(self, impact_func: Callable):
+        """Set imapact genearator function.
+        """
+        self.impact_generator = impact_func

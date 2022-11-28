@@ -43,7 +43,7 @@ def main():
 
     Adjacent matrix for lag
          x1   x2   x3   x4
-    x1    0    5    0    7
+    x1    0    5    0    1
     x2    0    0    3    0
     x3    0    0    0    0
     x4    0    0    2    0
@@ -59,10 +59,17 @@ def main():
     graph.write_node_condition("x2", "x1", 0.1, 5)
     graph.write_node_condition("x3", "x2", 0.1, 3)
     graph.write_node_condition("x3", "x4", 0.1, 2)
-    graph.write_node_condition("x4", "x1", 0.1, 7)
+    graph.write_node_condition("x4", "x1", 0.1, 1)
     graph.write_node_condition("x3", "x5", 0.2, 1)
 
     np.random.seed(0)
+
+    def generator_white_noise():
+        while 1:
+            yield np.random.normal(10, 1)
+
+    graph.set_impact_generator("x1", generator_white_noise)
+    graph.set_impact_generator("x5", generator_white_noise)
 
     maxlag = 20
     graph.initialize(maxlag)
@@ -77,7 +84,10 @@ def main():
     plt.close()
 
     lags, corrs = compute_ccf(df["x1"], df["x3"], 50)
-    plt.plot(lags, corrs)
+    plt.stem(lags, corrs, markerfmt=" k", linefmt="k")
+    uncorr_points = np.repeat(1.96 / np.sqrt(len(df)), len(lags))
+    plt.plot(lags, +uncorr_points, color="k", ls="--")
+    plt.plot(lags, -uncorr_points, color="k", ls="--")
     plt.show()
     plt.close()
 
