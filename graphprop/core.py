@@ -53,9 +53,9 @@ class Graph:
                     total_value += cond["intensity"] * value
                 node.values.append(total_value)
 
-    def write_node_condition(self, target: str, prop_from: str,
+    def write_node_condition(self, prop_from: str, prop_to: str,
                              intensity: float, lag: int):
-        self[target].add_condition(prop_from, intensity, lag)
+        self[prop_to].add_condition(prop_from, intensity, lag)
 
     @property
     def realization(self):

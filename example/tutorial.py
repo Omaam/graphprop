@@ -56,11 +56,11 @@ def main():
     graph.add_node("x4", False)
     graph.add_node("x5", True)
 
-    graph.write_node_condition("x2", "x1", 0.1, 5)
-    graph.write_node_condition("x3", "x2", 0.1, 3)
-    graph.write_node_condition("x3", "x4", 0.1, 2)
-    graph.write_node_condition("x4", "x1", 0.1, 1)
-    graph.write_node_condition("x3", "x5", 0.2, 1)
+    graph.write_node_condition("x1", "x2", 0.1, 5)
+    graph.write_node_condition("x2", "x3", 0.1, 3)
+    graph.write_node_condition("x4", "x3", 0.1, 2)
+    graph.write_node_condition("x2", "x4", 0.1, 1)
+    graph.write_node_condition("x5", "x3", 0.2, 1)
 
     np.random.seed(0)
 
