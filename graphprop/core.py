@@ -43,7 +43,7 @@ class Graph:
         self.time += 1
         for node in self.nodes.values():
             if node.is_origin:
-                value = next(node.impact_generator())
+                value = next(node.impact_generator)
                 node.values.append(value)
             else:
                 total_value = 0
@@ -89,4 +89,4 @@ class Node:
     def set_impact_generator(self, impact_func: Callable):
         """Set imapact genearator function.
         """
-        self.impact_generator = impact_func
+        self.impact_generator = impact_func()
